@@ -1,0 +1,44 @@
+{
+  "agent_name": "Instagram & Facebook Agent",
+  "agent_id": "699ec811602ba3778b39a378",
+  "description": "Searches for the company's Instagram and Facebook pages, scrapes public posts, engagement metrics, follower counts, reviews, and ratings from Meta platforms",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "instagram_followers": "string",
+      "instagram_engagement_rate": "string",
+      "instagram_post_frequency": "string",
+      "instagram_content_themes": "string",
+      "instagram_notable_posts": "string",
+      "instagram_verified": "string",
+      "facebook_followers": "string",
+      "facebook_rating": "string",
+      "facebook_review_highlights": "string",
+      "facebook_engagement": "string",
+      "facebook_activity_level": "string",
+      "meta_sentiment_trend": "string",
+      "data_gaps": "string",
+      "summary": "string"
+    }
+  },
+  "example_response": {
+    "result": {
+      "instagram_followers": "sample string",
+      "instagram_engagement_rate": "sample string",
+      "instagram_post_frequency": "sample string",
+      "instagram_content_themes": "sample string",
+      "instagram_notable_posts": "sample string",
+      "instagram_verified": "sample string",
+      "facebook_followers": "sample string",
+      "facebook_rating": "sample string",
+      "facebook_review_highlights": "sample string",
+      "facebook_engagement": "sample string",
+      "facebook_activity_level": "sample string",
+      "meta_sentiment_trend": "sample string",
+      "data_gaps": "sample string",
+      "summary": "sample string"
+    }
+  }
+}

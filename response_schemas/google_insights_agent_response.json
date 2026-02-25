@@ -1,0 +1,46 @@
+{
+  "agent_name": "Google Insights Agent",
+  "agent_id": "699ec8110ceb0203f1ce736f",
+  "description": "Searches Google for company reviews, Google Business Profile data, recent news articles, press releases, contact details, and general business information",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "google_rating": "string",
+      "google_review_count": "string",
+      "google_review_highlights": "string",
+      "recent_news": "string",
+      "press_releases": "string",
+      "website": "string",
+      "phone": "string",
+      "email": "string",
+      "headquarters": "string",
+      "founding_year": "string",
+      "employee_count": "string",
+      "industry": "string",
+      "revenue_estimate": "string",
+      "data_gaps": "string",
+      "summary": "string"
+    }
+  },
+  "example_response": {
+    "result": {
+      "google_rating": "sample string",
+      "google_review_count": "sample string",
+      "google_review_highlights": "sample string",
+      "recent_news": "sample string",
+      "press_releases": "sample string",
+      "website": "sample string",
+      "phone": "sample string",
+      "email": "sample string",
+      "headquarters": "sample string",
+      "founding_year": "sample string",
+      "employee_count": "sample string",
+      "industry": "sample string",
+      "revenue_estimate": "sample string",
+      "data_gaps": "sample string",
+      "summary": "sample string"
+    }
+  }
+}

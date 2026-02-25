@@ -1,0 +1,46 @@
+{
+  "agent_name": "Alternative Sources Agent",
+  "agent_id": "699ec812dd80cdb173d3dd43",
+  "description": "Searches LinkedIn, company websites, Glassdoor, business directories, and other public sources for employee sentiment, company details, and supplementary information",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "linkedin_employees": "string",
+      "linkedin_description": "string",
+      "linkedin_specialties": "string",
+      "glassdoor_rating": "string",
+      "glassdoor_ceo_approval": "string",
+      "glassdoor_recommend": "string",
+      "glassdoor_pros": "string",
+      "glassdoor_cons": "string",
+      "work_life_balance_rating": "string",
+      "culture_rating": "string",
+      "key_executives": "string",
+      "funding_info": "string",
+      "employee_sentiment_themes": "string",
+      "data_gaps": "string",
+      "summary": "string"
+    }
+  },
+  "example_response": {
+    "result": {
+      "linkedin_employees": "sample string",
+      "linkedin_description": "sample string",
+      "linkedin_specialties": "sample string",
+      "glassdoor_rating": "sample string",
+      "glassdoor_ceo_approval": "sample string",
+      "glassdoor_recommend": "sample string",
+      "glassdoor_pros": "sample string",
+      "glassdoor_cons": "sample string",
+      "work_life_balance_rating": "sample string",
+      "culture_rating": "sample string",
+      "key_executives": "sample string",
+      "funding_info": "sample string",
+      "employee_sentiment_themes": "sample string",
+      "data_gaps": "sample string",
+      "summary": "sample string"
+    }
+  }
+}

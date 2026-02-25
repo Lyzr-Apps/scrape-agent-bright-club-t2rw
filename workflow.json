@@ -1,0 +1,101 @@
+{
+  "workflow": {
+    "nodes": [
+      {"id": "input_node", "type": "Input", "label": "Company Name Query", "nodeCategory": "input"},
+      {"id": "manager_agent", "type": "Agent", "label": "Company Intelligence Manager", "nodeCategory": "agent"},
+      {"id": "instagram_facebook_agent", "type": "Agent", "label": "Instagram & Facebook Agent", "nodeCategory": "agent"},
+      {"id": "twitter_agent", "type": "Agent", "label": "X/Twitter Intelligence Agent", "nodeCategory": "agent"},
+      {"id": "google_agent", "type": "Agent", "label": "Google Insights Agent", "nodeCategory": "agent"},
+      {"id": "alt_sources_agent", "type": "Agent", "label": "Alternative Sources Agent", "nodeCategory": "agent"},
+      {"id": "output_node", "type": "Output", "label": "Company Intelligence Report", "nodeCategory": "end"}
+    ],
+    "edges": [
+      {"source": "input_node", "target": "manager_agent"},
+      {"source": "manager_agent", "target": "instagram_facebook_agent"},
+      {"source": "manager_agent", "target": "twitter_agent"},
+      {"source": "manager_agent", "target": "google_agent"},
+      {"source": "manager_agent", "target": "alt_sources_agent"},
+      {"source": "manager_agent", "target": "output_node"}
+    ]
+  },
+  "agents": {
+    "manager": {
+      "agent_id": "699ec82ddd80cdb173d3dd49",
+      "name": "Company Intelligence Manager",
+      "description": "Coordinates all sub-agents, routes the company name query to each, aggregates results into a unified company profile with summary, reviews, sentiment, and details",
+      "agent_role": "Senior Intelligence Coordinator and Report Synthesizer",
+      "provider": "openai",
+      "model": "gpt-4.1",
+      "temperature": 0.3,
+      "top_p": 1,
+      "managed_agents": [
+        "699ec811602ba3778b39a378",
+        "699ec811602ba3778b39a37a",
+        "699ec8110ceb0203f1ce736f",
+        "699ec812dd80cdb173d3dd43"
+      ],
+      "image_output_config": null,
+      "voice_config": null,
+      "file_output": false,
+      "response_schema_file": "response_schemas/company_intelligence_manager_response.json"
+    },
+    "sub_agents": [
+      {
+        "agent_id": "699ec811602ba3778b39a378",
+        "name": "Instagram & Facebook Agent",
+        "description": "Searches for the company's Instagram and Facebook pages, scrapes public posts, engagement metrics, follower counts, reviews, and ratings from Meta platforms",
+        "agent_role": "Social Media Intelligence Analyst specializing in Meta platforms (Instagram and Facebook)",
+        "provider": "perplexity",
+        "model": "sonar-pro",
+        "temperature": 0.2,
+        "top_p": 1,
+        "image_output_config": null,
+        "voice_config": null,
+        "file_output": false,
+        "response_schema_file": "response_schemas/instagram_facebook_agent_response.json"
+      },
+      {
+        "agent_id": "699ec811602ba3778b39a37a",
+        "name": "X/Twitter Intelligence Agent",
+        "description": "Searches for the company's Twitter/X profile and recent mentions, scrapes follower count, post engagement, public sentiment, trending topics, and news mentions",
+        "agent_role": "Social Media Intelligence Analyst specializing in X/Twitter platform",
+        "provider": "perplexity",
+        "model": "sonar-pro",
+        "temperature": 0.2,
+        "top_p": 1,
+        "image_output_config": null,
+        "voice_config": null,
+        "file_output": false,
+        "response_schema_file": "response_schemas/x_twitter_intelligence_agent_response.json"
+      },
+      {
+        "agent_id": "699ec8110ceb0203f1ce736f",
+        "name": "Google Insights Agent",
+        "description": "Searches Google for company reviews, Google Business Profile data, recent news articles, press releases, contact details, and general business information",
+        "agent_role": "Business Intelligence Analyst specializing in Google search and business data",
+        "provider": "perplexity",
+        "model": "sonar-pro",
+        "temperature": 0.2,
+        "top_p": 1,
+        "image_output_config": null,
+        "voice_config": null,
+        "file_output": false,
+        "response_schema_file": "response_schemas/google_insights_agent_response.json"
+      },
+      {
+        "agent_id": "699ec812dd80cdb173d3dd43",
+        "name": "Alternative Sources Agent",
+        "description": "Searches LinkedIn, company websites, Glassdoor, business directories, and other public sources for employee sentiment, company details, and supplementary information",
+        "agent_role": "Alternative Intelligence Analyst specializing in LinkedIn, Glassdoor, and business directories",
+        "provider": "perplexity",
+        "model": "sonar-pro",
+        "temperature": 0.2,
+        "top_p": 1,
+        "image_output_config": null,
+        "voice_config": null,
+        "file_output": false,
+        "response_schema_file": "response_schemas/alternative_sources_agent_response.json"
+      }
+    ]
+  }
+}

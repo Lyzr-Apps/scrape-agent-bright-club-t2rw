@@ -1,0 +1,40 @@
+{
+  "agent_name": "X/Twitter Intelligence Agent",
+  "agent_id": "699ec811602ba3778b39a37a",
+  "description": "Searches for the company's Twitter/X profile and recent mentions, scrapes follower count, post engagement, public sentiment, trending topics, and news mentions",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "twitter_handle": "string",
+      "twitter_followers": "string",
+      "twitter_following": "string",
+      "tweet_frequency": "string",
+      "average_engagement": "string",
+      "recent_mentions_sentiment": "string",
+      "trending_topics": "string",
+      "notable_tweets": "string",
+      "verified_status": "string",
+      "news_mentions": "string",
+      "data_gaps": "string",
+      "summary": "string"
+    }
+  },
+  "example_response": {
+    "result": {
+      "twitter_handle": "sample string",
+      "twitter_followers": "sample string",
+      "twitter_following": "sample string",
+      "tweet_frequency": "sample string",
+      "average_engagement": "sample string",
+      "recent_mentions_sentiment": "sample string",
+      "trending_topics": "sample string",
+      "notable_tweets": "sample string",
+      "verified_status": "sample string",
+      "news_mentions": "sample string",
+      "data_gaps": "sample string",
+      "summary": "sample string"
+    }
+  }
+}

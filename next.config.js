@@ -22,6 +22,7 @@ const nextConfig = {
   experimental: {
     // Optimize package imports for faster builds
     optimizePackageImports: [
+      'react-icons',
       'lucide-react',
       '@radix-ui/react-accordion',
       '@radix-ui/react-alert-dialog',

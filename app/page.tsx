@@ -1180,7 +1180,7 @@ export default function Page() {
                     <div className="text-center py-16">
                       <FaExclamationTriangle className="text-muted-foreground mx-auto mb-4" size={24} />
                       <p className="text-sm text-muted-foreground tracking-wider mb-4">
-                        We couldn&apos;t find enough data for &ldquo;{searchQuery}&rdquo;. Try a different name or spelling.
+                        We couldn{"'"}t find enough data for {"\u201C"}{searchQuery}{"\u201D"}. Try a different name or spelling.
                       </p>
                       <Button
                         variant="outline"

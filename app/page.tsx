@@ -46,6 +46,21 @@ import { HiSparkles } from 'react-icons/hi2'
 
 const AGENT_ID = '699ec82ddd80cdb173d3dd49'
 
+// --- Known schema fields for validation ---
+const SCHEMA_FIELDS: (keyof CompanyData)[] = [
+  'company_name', 'industry', 'location', 'overall_sentiment', 'executive_summary',
+  'instagram_followers', 'instagram_engagement', 'instagram_sentiment',
+  'facebook_followers', 'facebook_rating', 'facebook_reviews',
+  'twitter_followers', 'twitter_engagement', 'twitter_sentiment',
+  'linkedin_employees', 'linkedin_description',
+  'google_rating', 'google_review_count', 'google_review_highlights',
+  'recent_news', 'press_releases',
+  'glassdoor_rating', 'glassdoor_pros', 'glassdoor_cons',
+  'employee_sentiment', 'work_life_balance', 'culture_rating',
+  'website', 'phone', 'headquarters', 'founding_year', 'employee_count',
+  'data_gaps', 'key_takeaways',
+]
+
 // --- Types ---
 
 interface CompanyData {
@@ -89,6 +104,113 @@ interface SearchHistoryItem {
   companyName: string
   date: string
   sentiment: string
+}
+
+// --- Deep Response Extraction ---
+
+/**
+ * Deeply extracts CompanyData from an agent response, handling:
+ * - Nested result.result.result... wrappers
+ * - Stringified JSON at any depth
+ * - response.message containing JSON
+ * - raw_response strings
+ * - Flat objects with schema fields at any nesting level
+ */
+function extractCompanyData(raw: any): CompanyData {
+  if (!raw) return {}
+
+  // Helper: count how many schema fields an object has
+  const countSchemaFields = (obj: any): number => {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return 0
+    return SCHEMA_FIELDS.filter(f => obj[f] !== undefined && obj[f] !== null && obj[f] !== '').length
+  }
+
+  // Helper: try parsing a string as JSON
+  const tryParse = (str: string): any => {
+    if (typeof str !== 'string') return null
+    const trimmed = str.trim()
+    if (!trimmed) return null
+    try {
+      return JSON.parse(trimmed)
+    } catch {
+      // Try parseLLMJson for resilient parsing
+      const parsed = parseLLMJson(trimmed)
+      if (parsed && typeof parsed === 'object' && !parsed.error) return parsed
+      return null
+    }
+  }
+
+  // Collect all candidate objects by walking the structure
+  const candidates: { obj: any; depth: number; score: number }[] = []
+
+  const walk = (node: any, depth: number) => {
+    if (depth > 10 || !node) return
+
+    // If it's a string, try to parse it
+    if (typeof node === 'string') {
+      const parsed = tryParse(node)
+      if (parsed && typeof parsed === 'object') {
+        walk(parsed, depth + 1)
+      }
+      return
+    }
+
+    if (typeof node !== 'object' || Array.isArray(node)) return
+
+    // Score this object
+    const score = countSchemaFields(node)
+    if (score > 0) {
+      candidates.push({ obj: node, depth, score })
+    }
+
+    // Walk common wrapper keys
+    const wrapperKeys = ['result', 'response', 'data', 'output', 'content', 'message', 'raw_response', 'rawResponse', 'text']
+    for (const key of wrapperKeys) {
+      if (node[key] !== undefined && node[key] !== null) {
+        walk(node[key], depth + 1)
+      }
+    }
+  }
+
+  walk(raw, 0)
+
+  if (candidates.length === 0) {
+    // Fallback: if raw is an object, try to use it directly
+    if (typeof raw === 'object' && !Array.isArray(raw)) {
+      return raw as CompanyData
+    }
+    return {}
+  }
+
+  // Pick the candidate with the highest score (most matching schema fields)
+  // On tie, prefer shallower depth
+  candidates.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    return a.depth - b.depth
+  })
+
+  const best = candidates[0].obj
+
+  // Build final result: extract only known fields, stringify any nested objects
+  const result: CompanyData = {}
+  for (const field of SCHEMA_FIELDS) {
+    let val = best[field]
+    if (val === undefined || val === null) continue
+    if (typeof val === 'object') {
+      // Convert objects/arrays to readable string
+      if (Array.isArray(val)) {
+        result[field] = val.map((item: any) =>
+          typeof item === 'string' ? item : JSON.stringify(item)
+        ).join('\n- ')
+      } else {
+        try { result[field] = JSON.stringify(val) } catch { result[field] = String(val) }
+      }
+    } else {
+      result[field] = String(val)
+    }
+  }
+
+  return result
 }
 
 // --- Helper Components ---
@@ -498,20 +620,36 @@ export default function Page() {
         setActiveAgentId(null)
 
         if (apiResult.success) {
-          let data = apiResult?.response?.result
-          if (typeof data === 'string') {
-            data = parseLLMJson(data)
-          }
-          if (data?.result && typeof data.result === 'object') {
-            data = data.result
+          // Deep extract: pass the entire apiResult to the extractor
+          // It will walk through all nesting levels (response.result, raw_response,
+          // stringified JSON, double/triple wrappers) and find the object with
+          // the most matching schema fields.
+          const extracted = extractCompanyData(apiResult)
+
+          // Fallback: if extraction yielded nothing useful, try response directly
+          const fieldCount = SCHEMA_FIELDS.filter(f => extracted[f]).length
+
+          let finalData: CompanyData
+          if (fieldCount >= 3) {
+            finalData = extracted
+          } else {
+            // Try one more pass specifically on response.result
+            const fallback = extractCompanyData(apiResult?.response?.result)
+            const fallbackCount = SCHEMA_FIELDS.filter(f => fallback[f]).length
+            finalData = fallbackCount > fieldCount ? fallback : extracted
           }
 
-          setResult(data as CompanyData)
+          // Ensure company_name is set
+          if (!finalData.company_name) {
+            finalData.company_name = company.trim()
+          }
+
+          setResult(finalData)
 
           const historyItem: SearchHistoryItem = {
-            companyName: data?.company_name || company.trim(),
+            companyName: finalData.company_name || company.trim(),
             date: new Date().toISOString(),
-            sentiment: data?.overall_sentiment || 'Unknown',
+            sentiment: finalData.overall_sentiment || 'Unknown',
           }
           saveToHistory(historyItem)
           setSearchHistory(loadHistory())
